@@ -12,8 +12,12 @@ This project is designed for internship evaluation: it demonstrates document ing
 
 ## Live Demo
 
-- Sayendranadh Document QA Bot: (https://sayendranadh-document-qa-bot-app-gjzdzt.streamlit.app/)
-- GitHub Repository: (https://github.com/sayendranadh/document-qa-bot)
+- Streamlit App: [Sayendranadh Document QA Bot](https://sayendranadh-document-qa-bot-app-gjzdzt.streamlit.app/)
+- GitHub Repository: [sayendranadh/document-qa-bot](https://github.com/sayendranadh/document-qa-bot)
+- Analysis Document: [ANALYSIS_DOCUMENT.md](ANALYSIS_DOCUMENT.md)
+- Streamlit App: `PASTE_YOUR_DEPLOYED_STREAMLIT_URL_HERE`
+- GitHub Repository: `https://github.com/sayendranadh/document-qa-bot`
+- Analysis Document: [`ANALYSIS_DOCUMENT.md`](ANALYSIS_DOCUMENT.md)
 
 Replace the Streamlit URL above with your deployed app link before final submission.
 
@@ -284,6 +288,7 @@ document-qa-bot/
 |-- .env.example                   # Example environment variables
 |-- .gitignore                     # Ignores secrets, venvs, DB files
 |-- DEPLOYMENT.md                  # Deployment instructions
+|-- ANALYSIS_DOCUMENT.md           # Detailed project analysis
 |-- PROJECT_EXPLANATION.md         # Interview explanation
 |-- SUBMISSION_CHECKLIST.md        # Final submission checklist
 |-- VIDEO_SCRIPT.md                # Screen recording script
@@ -412,7 +417,6 @@ python -m compileall src scripts tests
 ```
 
 Validated checks:
-
 - Document loading tests
 - Chunking tests
 - Vector search tests
@@ -461,6 +465,7 @@ CHROMA_PERSIST_DIRECTORY = "db"
 - Deployed Streamlit app link
 - Screen recording link
 - README with architecture and explanation
+- Analysis document for detailed evaluation
 - Gemini API key stored only in `.env` or Streamlit secrets
 - `.env`, virtual environments, and local DB files excluded from Git
 
