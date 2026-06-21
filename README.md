@@ -404,36 +404,6 @@ python query.py --db-path db --collection document_qa --question "Why does RAG r
 8. Open `Retrieved evidence`.
 9. Explain how the answer is grounded in source chunks.
 
-## Important Evaluation Questions And Answers
-
-### Why did you use RAG?
-
-RAG allows the model to answer from private documents without retraining. It retrieves relevant chunks first and then asks the LLM to answer from that context.
-
-### Why did you use ChromaDB?
-
-ChromaDB is lightweight, local, persistent, and easy to use for vector similarity search. It is suitable for a focused internship proof of concept.
-
-### Why do you chunk the document?
-
-Chunking keeps the context small, relevant, and affordable. It also helps retrieve only the parts of the document that are useful for a question.
-
-### Why use chunk overlap?
-
-Overlap prevents losing context when important information appears near the boundary between chunks.
-
-### How do you reduce hallucinations?
-
-The prompt tells Gemini to use only retrieved context. If the answer is not found in the context, the app instructs Gemini to say that it cannot find the answer in the provided documents.
-
-### How are citations created?
-
-Each chunk stores metadata such as file name and page number. The prompt includes this metadata, and the UI displays retrieved evidence with citations.
-
-### What happens if retrieval is weak?
-
-The UI shows similarity scores and warns when the minimum similarity threshold is too strict. This helps the user tune retrieval instead of receiving confusing empty answers.
-
 ## Testing
 
 ```powershell
