@@ -1,0 +1,7 @@
+Evaluation Factsheet
+
+The Document Q&A Bot accepts PDF, DOCX, TXT, and Markdown files. It extracts text, stores source metadata, chunks the text, creates embeddings, saves vectors in ChromaDB, and retrieves top-k chunks for each user question.
+
+The prompt instructs the language model to use only the retrieved context. If the answer is not available in the retrieved context, the model should say: I cannot find the answer in the provided documents.
+
+The user interface shows retrieved evidence, similarity scores, and citations so evaluators can inspect how the answer was produced.

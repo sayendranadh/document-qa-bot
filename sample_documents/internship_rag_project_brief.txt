@@ -1,0 +1,25 @@
+Internship Evaluation Project Brief
+
+Project Name: Document Q&A Bot with Retrieval-Augmented Generation
+
+The application allows a user to upload private documents and ask questions about them. The system does not rely on the language model's training memory alone. Instead, it extracts text from the uploaded files, splits the text into overlapping chunks, creates vector embeddings, retrieves semantically relevant chunks for each question, and sends those chunks to the language model as grounded context.
+
+Core Requirements
+
+1. The bot must support PDF, DOCX, TXT, and Markdown documents.
+2. The bot must provide source citations so the evaluator can verify where the answer came from.
+3. If the uploaded documents do not contain enough information, the bot should say so instead of inventing an answer.
+4. The interface should be simple enough for a non-technical evaluator to test.
+5. The code should be modular so each RAG step is easy to explain.
+
+Evaluation Notes
+
+The most important technical idea is that retrieval happens before generation. The vector store ranks chunks by semantic similarity to the user question. The model then receives only the top-ranked chunks, which helps reduce hallucination and makes answers traceable to document sources.
+
+Sample Question
+
+Why does the project use retrieval before generation?
+
+Expected Answer
+
+The project uses retrieval before generation so that the language model answers from relevant uploaded document context instead of relying only on its general training data. This improves factual grounding and supports source citations.
