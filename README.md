@@ -12,7 +12,7 @@ This project is designed for internship evaluation: it demonstrates document ing
 
 ## Live Demo
 
-- [Sayendranadh Document QA Bot](https://sayendranadh-document-qa-bot-app-gjzdzt.streamlit.app/)
+- Sayendranadh Document QA Bot: (https://sayendranadh-document-qa-bot-app-gjzdzt.streamlit.app/)
 - GitHub Repository: (https://github.com/sayendranadh/document-qa-bot)
 
 Replace the Streamlit URL above with your deployed app link before final submission.
