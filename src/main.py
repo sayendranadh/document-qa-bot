@@ -62,6 +62,7 @@ def _initialize_state() -> None:
     st.session_state.setdefault("pipeline", None)
     st.session_state.setdefault("document_names", [])
     st.session_state.setdefault("chunk_count", 0)
+    st.session_state.setdefault("indexed_chunks", [])
     st.session_state.setdefault("messages", [])
     st.session_state.setdefault("last_indexed_at", None)
 
@@ -83,20 +84,24 @@ def _render_sidebar() -> AppConfig:
     chunk_size = st.slider("Chunk size", min_value=400, max_value=2_000, value=1_000, step=100)
     chunk_overlap = st.slider("Chunk overlap", min_value=0, max_value=400, value=180, step=20)
     top_k = st.slider("Retrieved chunks", min_value=1, max_value=8, value=5)
-    default_min_score = 0.10 if api_key.strip() else -1.0
+    default_min_score = 0.00 if api_key.strip() else -1.0
     min_score = st.slider(
         "Minimum similarity",
         min_value=-1.0,
-        max_value=1.0,
+        max_value=0.8,
         value=default_min_score,
         step=0.05,
+        help="Higher values are stricter. Use 0.00-0.20 for most document questions.",
     )
+    if min_score >= 0.6:
+        st.warning("This threshold is very strict and may hide useful document chunks.")
 
     st.divider()
     if st.button("Clear session", use_container_width=True):
         st.session_state.pipeline = None
         st.session_state.document_names = []
         st.session_state.chunk_count = 0
+        st.session_state.indexed_chunks = []
         st.session_state.messages = []
         st.session_state.last_indexed_at = None
         st.rerun()
@@ -159,6 +164,7 @@ def _render_upload_panel(config: AppConfig) -> None:
                     st.session_state.pipeline = pipeline
                     st.session_state.document_names = sorted({document.name for document in documents})
                     st.session_state.chunk_count = pipeline.vector_store.count
+                    st.session_state.indexed_chunks = pipeline.indexed_chunks
                     st.session_state.messages = []
                     st.session_state.last_indexed_at = datetime.now().strftime("%H:%M")
                 except (DocumentLoadError, ValueError, RuntimeError) as exc:
@@ -171,6 +177,7 @@ def _render_upload_panel(config: AppConfig) -> None:
             st.write("Indexed files")
             for name in st.session_state.document_names:
                 st.markdown(f"- `{name}`")
+            _render_indexed_chunk_preview()
 
 
 def _render_chat_panel(config: AppConfig) -> None:
@@ -183,10 +190,14 @@ def _render_chat_panel(config: AppConfig) -> None:
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
+            if message.get("threshold_blocked"):
+                st.warning("The similarity threshold filtered out all context for this answer.")
             if message.get("sources"):
                 _render_sources(message["sources"])
 
+    suggested_question = _render_suggested_questions()
     question = st.chat_input("Ask a question about the uploaded documents")
+    question = question or suggested_question
     if not question:
         return
 
@@ -207,6 +218,8 @@ def _render_chat_panel(config: AppConfig) -> None:
                 return
 
         st.markdown(result.answer)
+        if result.threshold_blocked:
+            st.warning("The answer was not sent to Gemini because the similarity threshold filtered out all context.")
         _render_sources(result.retrieved_chunks)
 
     st.session_state.messages.append(
@@ -214,12 +227,52 @@ def _render_chat_panel(config: AppConfig) -> None:
             "role": "assistant",
             "content": result.answer,
             "sources": result.retrieved_chunks,
+            "threshold_blocked": result.threshold_blocked,
         }
     )
 
 
+def _render_suggested_questions() -> str | None:
+    col1, col2, col3 = st.columns(3)
+    suggestions = [
+        (col1, "Summarize Document", "Summarize the indexed document in simple terms."),
+        (col2, "List Key Points", "List the key points from the indexed document."),
+        (col3, "Explain Purpose", "What is the purpose of this document?"),
+    ]
+
+    for column, label, question in suggestions:
+        if column.button(label, use_container_width=True):
+            return question
+    return None
+
+
+def _render_indexed_chunk_preview() -> None:
+    chunks = st.session_state.get("indexed_chunks", [])
+    if not chunks:
+        return
+
+    with st.expander("Preview extracted document content", expanded=True):
+        st.caption("These are the chunks created from the uploaded file before embedding and search.")
+        for chunk in chunks[:6]:
+            st.markdown(
+                f"""
+<div class="citation">
+    <strong>{chunk.citation_label}</strong>
+    <div class="small-muted">Chunk {chunk.metadata.get("chunk", "-")} | {len(chunk.text)} characters</div>
+    <p>{_html_escape(chunk.text[:1_000])}</p>
+</div>
+""",
+                unsafe_allow_html=True,
+            )
+        if len(chunks) > 6:
+            st.caption(f"Showing 6 of {len(chunks)} chunks.")
+
+
 def _render_sources(retrieved_chunks) -> None:
     with st.expander("Retrieved evidence", expanded=False):
+        if not retrieved_chunks:
+            st.caption("No retrieved chunks are available.")
+            return
         for item in retrieved_chunks:
             chunk = item.chunk
             st.markdown(

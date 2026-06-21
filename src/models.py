@@ -46,3 +46,4 @@ class RAGAnswer:
     answer: str
     retrieved_chunks: list[RetrievedChunk]
     mode: str
+    threshold_blocked: bool = False
