@@ -15,7 +15,6 @@ This project is designed for internship evaluation: it demonstrates document ing
 - Streamlit App: [Sayendranadh Document QA Bot](https://sayendranadh-document-qa-bot-app-gjzdzt.streamlit.app/)
 - GitHub Repository: [sayendranadh/document-qa-bot](https://github.com/sayendranadh/document-qa-bot)
 - Analysis Document: [ANALYSIS_DOCUMENT.md](ANALYSIS_DOCUMENT.md)
-- Streamlit App: `PASTE_YOUR_DEPLOYED_STREAMLIT_URL_HERE`
 - GitHub Repository: `https://github.com/sayendranadh/document-qa-bot`
 - Analysis Document: [`ANALYSIS_DOCUMENT.md`](ANALYSIS_DOCUMENT.md)
 
